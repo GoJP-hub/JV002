@@ -1,0 +1,76 @@
+【Springboot】
+コンセプト
+	Logbackというフレームワークを利用したログ出力方法
+利用方法
+	src/main/resources配下に、「logback-spring.xml」というファイルを作成する
+	以下の情報を添付する
+		<?xml version="1.0" encoding="UTF-8"?>
+		<configuration>
+			<include
+				resource="org/springframework/boot/logging/logback/base.xml" />
+			<include
+				resource="org/springframework/boot/logging/logback/consoleappender.xml" />
+			<logger name="org.springframework.web" level="DEBUG" />
+			<property name="LOG_FILE" value="logs/application.log" />
+			<appender name="FILE"
+				class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<encoder>
+					<pattern>${FILE_LOG_PATTERN}</pattern>
+				</encoder>
+				<file>${LOG_FILE}</file>
+				<rollingPolicy
+					class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<fileNamePattern>${LOG_FILE}.%d{yyyyMMdd}</fileNamePattern>
+					<maxHistory>2</maxHistory>
+				</rollingPolicy>
+			</appender>
+			<root level="INFO">
+				<appender-ref ref="FILE" />
+			</root>
+		</configuration>
+	@SpringbootApplicationのクラスに、ログ用の印すランスを作成する
+		protected final static Logger logger = LoggerFactory.getLogger(ApiApplication.class);
+		※インポート元は、「org.slf4j」であること
+	同じクラスのメインメソッドに、サンプルの処理を実装する
+		logger.info("[TEST] Starting logs");
+	アプリを実行して結果を確認する
+		・コンソールで出力内容を確認できる
+		・リフレッシュすることで、（srcの同じ階層に）logsフォルダを確認できる
+			※そこに設定したファイルがあるはず
+補足情報：背景
+	SpringInitializrで、DependenciesをWebとしたことにより、logbackが利用可能
+補足情報：logback-spring.xmlの読みかた
+	includeリソースで、別ファイルにあらかじめ一部の定義を行って、呼び込む形をとる
+		※external libraryフォルダの内容を取得している→トレース可能
+	includeで呼びだしたものに加えて、カスタム仕様を付与することが可能
+		※<property...>で、logs/application.logに出力されることがわかる
+	appenderタブでは、どこに、どんなレイアウトでログを出力をするのか設定できる
+		※これも同様に、既に外部ライブラリに存在有り
+		※RollingPolicyの詳細で、ファイル名に日付を付与する形で追加する設定を記載
+	rootタブで、出力の設定を決めている
+		※Appenderの情報をここで呼びだしている
+	
+	※logback/base.xmlの補足
+		・logbackでは、クラスのパッケージごとにレベル（INFO等）が設定できる
+		・特に設定が無い場合、[INFO]が返される仕組みになっている
+
+
+コンセプト
+	特定のオブジェクトのみをGITに格納する
+	※今回は「logs」フォルダはGITに保存するが、ログファイル自体は格納しない
+利用方法
+	.gitkeepファイルを、logsフォルダ直下に作成
+	.gitignoreファイルに、以下の情報を追記する
+		logs/*.log.*
+補足情報：XXX
+	XXX
+
+【】
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
+

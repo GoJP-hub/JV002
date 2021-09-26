@@ -1,0 +1,47 @@
+2021-09-26 21:53:16.497  INFO 26400 --- [main] training.spa.api.ApiApplication          : Starting ApiApplication using Java 1.8.0_202 on DESKTOP-STBSN56 with PID 26400 (C:\APPL_DEV\01_Java_Tutorial\javaTutorial-SPA-Springboot\api\bin\main started by gohir in C:\APPL_DEV\01_Java_Tutorial\javaTutorial-SPA-Springboot\api)
+2021-09-26 21:53:16.501  INFO 26400 --- [main] training.spa.api.ApiApplication          : No active profile set, falling back to default profiles: default
+2021-09-26 21:53:17.043  WARN 26400 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[training.spa.api]' package. Please check your configuration.
+2021-09-26 21:53:17.349  INFO 26400 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2021-09-26 21:53:17.358  INFO 26400 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-09-26 21:53:17.359  INFO 26400 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2021-09-26 21:53:17.430  INFO 26400 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-09-26 21:53:17.430  INFO 26400 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 890 ms
+2021-09-26 21:53:17.601 DEBUG 26400 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2021-09-26 21:53:17.650 DEBUG 26400 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 2 mappings in 'requestMappingHandlerMapping'
+2021-09-26 21:53:17.674 DEBUG 26400 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2021-09-26 21:53:17.682 DEBUG 26400 --- [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2021-09-26 21:53:17.870  WARN 26400 --- [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'; nested exception is org.springframework.boot.web.server.PortInUseException: Port 8080 is already in use
+2021-09-26 21:53:17.873  INFO 26400 --- [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2021-09-26 21:53:17.883  INFO 26400 --- [main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2021-09-26 21:53:17.898 ERROR 26400 --- [main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8080 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
+
+2021-09-26 21:53:57.207  INFO 14112 --- [main] training.spa.api.ApiApplication          : Starting ApiApplication using Java 1.8.0_202 on DESKTOP-STBSN56 with PID 14112 (C:\APPL_DEV\01_Java_Tutorial\javaTutorial-SPA-Springboot\api\bin\main started by gohir in C:\APPL_DEV\01_Java_Tutorial\javaTutorial-SPA-Springboot\api)
+2021-09-26 21:53:57.210  INFO 14112 --- [main] training.spa.api.ApiApplication          : No active profile set, falling back to default profiles: default
+2021-09-26 21:53:57.727  WARN 14112 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[training.spa.api]' package. Please check your configuration.
+2021-09-26 21:53:57.997  INFO 14112 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2021-09-26 21:53:58.005  INFO 14112 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-09-26 21:53:58.005  INFO 14112 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2021-09-26 21:53:58.071  INFO 14112 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-09-26 21:53:58.071  INFO 14112 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 826 ms
+2021-09-26 21:53:58.231 DEBUG 14112 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2021-09-26 21:53:58.278 DEBUG 14112 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 2 mappings in 'requestMappingHandlerMapping'
+2021-09-26 21:53:58.302 DEBUG 14112 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2021-09-26 21:53:58.309 DEBUG 14112 --- [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2021-09-26 21:53:58.499  INFO 14112 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2021-09-26 21:53:58.507  INFO 14112 --- [main] training.spa.api.ApiApplication          : Started ApiApplication in 1.739 seconds (JVM running for 2.605)
+2021-09-26 21:53:58.510  INFO 14112 --- [main] training.spa.api.ApiApplication          : [TEST] Starting logs
+2021-09-26 22:01:46.353  INFO 14112 --- [RMI TCP Connection(11)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
