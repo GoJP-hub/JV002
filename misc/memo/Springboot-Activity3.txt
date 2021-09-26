@@ -1,0 +1,100 @@
+【Springboot 】
+コンセプト
+	MySQLへのアクセス方法を設定する
+	・Bean作成→DAOインターフェイスを作成→SQL分の作成→MyBatisを設定　
+
+コンセプト
+	Beanを作成する
+利用方法
+	新規クラスを作成する
+		※新規パッケージ「domain」を作成する
+		※補足：クラス作成時のパッケージの欄で、パッケージ名を追記して自動生成が可能
+		※例）training.spa.api.[]と記載し、クラス作成すると、[]パッケージもできる
+	プロパティを定義する
+		※Articleの場合、Timestampは、java.sqlからインポートするクラスを設定
+	アノテーションで、「@Data」と記載し、Lombokのデータをインポートする
+		※getter/setterの省略のため
+
+コンセプト
+	DAOインターフェイスを設定する
+利用方法
+	新規インターフェイスを作成する
+		※新規パッケージ「dao」も作成する
+	以下の処理を追加する
+			// 全件のレコードを、Article型の配列で返す処理
+			List<Article> selectAll();
+
+			// SQLに類似：主キーを軸に、一つのレコードを取得する処理
+			Article select(int articleId);
+
+			// SQLに類似：各種アクションを、Article型をパラメータとして渡して処理を行っている
+			void insert(Article article);
+			void update(Article article);
+			void delete(Article article);
+	アノテーションを付与する
+		@Component...	springの部品として識別させるため　※Springフレームワークのアノテーション
+			※@SpringbootApplicationの仕様で、デフォルトパッケージ配下のComponentをComponentScanという特性で確認する
+				※検知した場合、ApplicationContextにBeanとして登録する模様→意味は分かっていない
+			※@Componentで指定した場合、「@Autowired」で指定することが可能となる
+		@Mapper...	　※myBatisのアノテーション
+
+コンセプト
+	XMLによるSQL設定
+利用方法
+	DAOクラスと同じフォルダ構成を「src/resource」に作成しつつ、xmlファイルを作成
+		例）training/spa/api/ArticleDao.xml
+	以下のXML内容を設定する
+		<!--?xml version="1.0" encoding="UTF-8" ? -->
+		<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+		<mapper namespace="training.spa.api.dao.ArticleDao">
+			<select id="selectAll"
+				resultType="training.spa.api.domain.Article">
+				SELECT * FROM articles ORDER BY created_at DESC
+			</select>
+			<select id="select" resultType="training.spa.api.domain.Article">
+				SELECT * FROM articles WHERE article_id = #{articleId}
+			</select>
+			<insert id="insert" useGeneratedKeys="true"
+				keyProperty="articleId">
+				INSERT INTO articles
+				(article_title, article_content, nice_count, picture_url, created_by)
+				VALUES
+				(#{articleTitle},#{articleContent},#{niceCount},#{pictureUrl},#
+				{createdBy})
+			</insert>
+			<update id="update" useGeneratedKeys="true"
+				keyProperty="articleId">
+				update articles SET
+				article_title = #{articleTitle},
+				article_content = #{articleContent},
+				nice_count = #{niceCount},
+				picture_url = #{pictureUrl},
+				created_by = #{createdBy}
+				WHERE article_id = #{articleId}
+			</update>
+			<delete id="delete">
+				DELETE FROM articles WHERE article_id = #{articleId}
+			</delete>
+		</mapper>
+補足情報：XMLの読み解き方
+	・mapperタグで、どこのDAOと紐づけるかを定義
+	・各アクションごとの定義を付与している
+		タブ名で、「SELECT」「INSERT」など、種別が判別できる　※正規のタブか未確認
+		IDでメソッドと紐づけている
+		※引数を渡している場合
+			#{引数}
+			例）select * from articles where articleId = #{articleId} 
+			※オブジェクトを渡した場合、メンバー変数単位で定義する
+			例１）引数は、Article article
+			例２）#{articleId}
+			
+
+【】
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
