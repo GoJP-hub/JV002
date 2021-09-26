@@ -1,0 +1,87 @@
+【MySQLのコマンドプロンプト】
+コンセプト
+	"source"句を利用することで、DDLからSQLを読み込んで実行することが可能
+利用方法
+	MySQL command line clientを軌道
+	ログインのため、パスワードの記入
+	source句で、対象DDLを絶対パスで指定する
+		source C:\APPL_DEV\01_Java_Tutorial\javaTutorial-SPA-Springboot\misc\resource\mysql-ddl.sql
+	以下のコマンドで、DDL実行成否を確認する
+		show tables;
+トレーニングにおけるDDLの概要
+	・MySQLインスタンスに接続
+	・新規データベースを作成
+	・新規データベースにアクセスする用のユーザ作成と権限の設定
+	・新規テーブルの作成
+	・モックデータを記入
+注意点
+	SQL分の後に「;」を宣言しないと、スクリプトは実行されず、次の文を待つ
+	DDLで「use "database"」などを実行した場合、それらがコマンドライン上の設定で引き継がれる
+
+【Springboot】
+コンセプト
+	空プロジェクトの作成
+利用方法
+	下記のURLにアクセスする
+		https://start.spring.io/
+	以下の内容を設定する
+		project:	gradle project
+		language:	java
+		springboot:	2.20
+		project meta:
+			group:	training.spa
+			artifact:	api
+			※これらはパッケージの命名に利用される。
+			※アーティファクトは、この上でアプリの名称にも利用される
+		dependencies ※利用するライブラリの設定
+			web:	tomcatを含む
+			mysql
+			mybatis:	mysqlの接続に利用
+			lombok:	beanのgetter/setterの記載を省いてくれる
+	generateを押下して、zipファイルを生成する
+確認方法
+	zipファイルを展開し、Eclipse上のプロジェクトでインポートする
+	起動用ソースにて、Springbootとして起動する
+		※DB接続ができていないからエラーが出てくるはず。
+
+コンセプト
+	DB接続の情報を設定する
+手順
+	src/main/resources直下にあるapplications.propertiesを確認する
+	ファイル名を「applications.yaml」に変える
+	下記の設定を付与する
+		spring:
+		  datasource:
+		      url: jdbc:mysql://localhost:3306/training?training=true&zeroDateTimeBehavior=convertToNull&autoReconnect=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Japan
+		      username: training
+		      password: training
+		 ※indentは、半角スペース2文字でなくてはいけない
+	再度、アプリを起動してみて、動作確認を行う
+
+コンセプト
+	アノテーションには、①クラス粒度、②詳細粒度を示唆するものがある
+基本情報
+	クラス粒度のアノテーション
+		@SpringBootApplication:	アプリケーションの起動を示唆する
+		@RestController:	コントローラクラスを示唆する
+			当アノテーションを利用するクラスは、「controller」フォルダ直下に置く
+			URLとビジネスロジックを紐づけるのが主な用途
+		@Service:	ビジネスロジックを記載する
+			当アノテーションを利用するクラスは、「service」フォルダ直下に置く
+			詳細粒度である「@Autowired」で、RestControllerにDIを行う仕様
+		@Repository:	DAOクラス（データ操作関連）
+			実際のデータソースは、JavaではなくXMLで記載する　※つまりSrc/Resources側
+			当アノテーションはそちらとの紐づけに利用する
+		@Component:	その他のクラス
+	小細粒度のアノテーション
+		@RequestMapping	URL情報などをパラメータで設定する
+		@Autowired	（@RestController側が）@Serviceの情報を指定して呼び出す
+			※DAOのJavaを@Serviceから呼び出すのにも使える　※と聞こえた
+		@transaction	データ操作をする際は、一部ではなく、すべての操作ができたかを確認する
+		
+補足情報
+	build.gradle	ライブラリのダウンロードなどを行う
+	application.yaml	DBの接続所法やほかのアプリケーションの設定情報を記載する
+	
+	
+	
