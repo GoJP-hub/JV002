@@ -3,7 +3,7 @@
 	<include
 		resource="org/springframework/boot/logging/logback/base.xml" />
 	<include
-		resource="org/springframework/boot/logging/logback/console-appender.xml" />
+		resource="org/springframework/boot/logging/logback/consoleappender.xml" />
 	<logger name="org.springframework.web" level="DEBUG" />
 	<property name="LOG_FILE" value="logs/application.log" />
 	<appender name="FILE"

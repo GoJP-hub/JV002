@@ -7,12 +7,14 @@
 		SELECT * FROM articles ORDER BY created_at DESC
 	</select>
 	<select id="select" resultType="training.spa.api.domain.Article">
-		SELECT * FROM articles WHERE article_id = #{articleId}
+		SELECT * FROM articles WHERE
+		article_id = #{articleId}
 	</select>
 	<insert id="insert" useGeneratedKeys="true"
 		keyProperty="articleId">
 		INSERT INTO articles
-		(article_title, article_content, nice_count, picture_url, created_by)
+		(article_title, article_content,
+		nice_count, picture_url, created_by)
 		VALUES
 		(#{articleTitle},#{articleContent},#{niceCount},#{pictureUrl},#
 		{createdBy})
@@ -25,7 +27,8 @@
 		nice_count = #{niceCount},
 		picture_url = #{pictureUrl},
 		created_by = #{createdBy}
-		WHERE article_id = #{articleId}
+		WHERE article_id
+		= #{articleId}
 	</update>
 	<delete id="delete">
 		DELETE FROM articles WHERE article_id = #{articleId}

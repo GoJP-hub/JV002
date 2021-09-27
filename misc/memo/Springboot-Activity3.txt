@@ -88,7 +88,87 @@
 			※オブジェクトを渡した場合、メンバー変数単位で定義する
 			例１）引数は、Article article
 			例２）#{articleId}
-			
+
+コンセプト
+	MyBatisの設定方法
+利用方法
+	src\resource直下に、「mybatis-config.xml」を作成する
+	以下の定義を追記する
+		<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE configuration
+		PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-config.dtd">
+		<configuration>
+			<settings>
+				<setting name="lazyLoadingEnabled" value="true" />
+				<setting name="useColumnLabel" value="true" />
+				<setting name="mapUnderscoreToCamelCase" value="true" />
+			</settings>
+		</configuration>
+	src\javaのデフォルトパッケージ（training...）に、config.DataConfig.javaを作成
+		新規パッケージを作成する（config）
+	以下の設定を付与する
+		@Configulationを付与する	※spring
+		@MapperScan(training.spa.api.dao)を設定する	※mybatis
+		メソッドとして以下を追記する
+			@Bean
+			public SqlSessionFactoryBean sqlSessionFactoryBean(DataSource dataSource) throws IOException {
+				SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
+				factory.setDataSource(dataSource);
+				ResourcePatternResolver resolver = ResourcePatternUtils.getResourcePatternResolver(new DefaultResourceLoader());
+				// MyBatis の設定ファイルの場所を指定する
+				factory.setConfigLocation(resolver.getResource("classpath:mybatisconfig.xml"));
+				// MyBatis で使用する SQLを定義したxmlの場所を指定する
+				factory.setMapperLocations(resolver.getResources("classpath*:training/spa/api/dao/**/*.xml"));
+				return factory;
+			}
+
+
+補足情報：XMLの読み方
+	重要なのは、Setting階層のmapUnderscoreToCamelCase
+		underscoreクエリを、カメルケース型のJava変数にマッピングする設定
+		※例）underscoreクエリ：	article_title
+		※例）Camelケース：	#{articletitle}
+			※キャメルケースのキャメルはラクダ。文字の途中で大文字になること。
+補足情報：DataConfigのメソッドの読み方
+	@Beanは、Springの一部
+	他は基本的にMyBatisの設定方法
+		DataSourceは、SQL
+		以外は自動インポートで行ける
+	最初のインスタンス化などで、MyBatisの利用環境を整え、　※これがあまりわからない
+	最後で設定ファイル（MyBatis用とSQL文用）を設定している
+
+コンセプト
+	テスト実行をする
+利用方法
+	src/test/javaのデフォルトパッケージ直下の「ApiApplicationTests」を開く
+	①ArticleDaoの挙動確認
+		以下の設定を付与する
+			@Autowired
+			ArticleDao artticleDao;
+			private static final Logger logger = LoggerFactory.getLogger(ApiApplicationTests.class);
+			@Test
+			public void article() {
+				// Beanのリストに、Select結果を格納する
+				List<Article> articleList = articleDao.selectAll();
+
+				// 検索結果を表示する
+				for (Article a: articleList) {
+					logger.info(a.getArticleId() + " " + a.getArticleTitle());
+				}
+
+				// Select結果がNullではないこと、また、正常にこれらの式が起動していることを評価する
+				assertTrue(articleList != null);
+			}
+		補足説明
+			Component指定しているから、Autowiredで紐づけ可能
+			これを実施するため、Interfaceでもインスタンスとして呼びだせている	
+			ログ出力用メソッドも付与することで、確認することができる
+			@Testで、判定処理を実行する。内容はコメントに記載した通り。
+補足情報：XXX
+	XXX
+
+
 
 【】
 コンセプト
