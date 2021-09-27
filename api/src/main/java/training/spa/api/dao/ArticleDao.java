@@ -6,20 +6,35 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
 import training.spa.api.domain.Article;
+import training.spa.api.domain.ArticleCount;
+import training.spa.api.domain.ArticleSearchCondition;
 
 @Component
 @Mapper
 public interface ArticleDao {
 
-	// 全件のレコードを、Article型の配列で返す処理
+
+
+	/**
+	 * 概要： DomainであるArticleに対するSQLの呼び出しメソッド
+	 *
+	 * 補足説明：
+	 * ・Resourceにおける同じパッケージ構造にあるXMLファイルで定義されたSQLを実行する
+	 * ・XMLでは、メソッド名とXMLでのIDが紐づく形をとっている
+	 */
 	List<Article> selectAll();
-
-	// SQLに類似：主キーを軸に、一つのレコードを取得する処理
 	Article select(int articleId);
-
-	// SQLに類似：各種アクションを、Article型をパラメータとして渡して処理を行っている
 	void insert(Article article);
 	void update(Article article);
 	void delete(Article article);
+
+	/**
+	 * 概要： DomainであるArticleCountとArticleSearchConditionに対するSQLの呼び出しメソッド
+	 *
+	 */
+	List<Article> selectLatest(ArticleSearchCondition articleSearchCondition);
+	ArticleCount count();
+
+
 
 }

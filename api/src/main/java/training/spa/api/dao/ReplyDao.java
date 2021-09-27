@@ -17,4 +17,5 @@ public interface ReplyDao {
 	void update(Reply reply);
 	void delete(Reply reply);
 
+	List<Reply> selectByArticleId(int articleId);
 }

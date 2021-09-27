@@ -33,4 +33,14 @@
 	<delete id="delete">
 		DELETE FROM articles WHERE article_id = #{articleId}
 	</delete>
+
+	<select id="selectLatest"
+		resultType="training.spa.api.domain.Article">
+		SELECT * FROM articles ORDER BY created_at DESC LIMIT
+		#{limit} OFFSET #{offset};
+	</select>
+	<select id="count"
+		resultType="training.spa.api.domain.ArticleCount">
+		SELECT count(*) as count FROM articles;
+	</select>
 </mapper>
