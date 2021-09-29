@@ -1,0 +1,112 @@
+【】
+コンセプト
+	コントローラ（サービスとURLをつなげる）を作成
+利用方法
+	新規パッケージ「controller」を作成する
+	その下に、コントローラクラスを作成する
+		名称はArticleController
+		以下の特性を含む
+		・アノテーション「RestController」を付与する
+		・アノテーション「CrossOrigin」を付与する
+		・アノテーション「RequestMapping」を付与し、パラメータを設定する
+			・今回は、URLのみを設定する　※その場合、valueの宣言は不要
+			例）@RequestMapping(value="/article")/@RequestMapping("/article")
+		・関連する「サービス」をDIする
+			@Autowired
+			private ArticleService articleService;
+		・メソッドでAPIを作成する
+			・アノテーション「RequestMapping」を付与し、パラメータを設定する
+				・今回は、URLとREST種別を設定する
+				例）@RequestMapping(value="/list", method=RequestMethod.GET)
+			・サービスを呼び出す
+				・今回は、サービスの「getLatestArticle」を呼び出し、そのままリターンに設定する
+補足情報：コントローラ関連のアノテーションについて
+	RestControllerのアノテーションで、Springにコントローラの機能を持つクラスだと示唆する
+	CrossOriginのアノテーションは、異なるDomainからアクセスされても許可する機能を持つ
+		※通常は、アクセス元のDomainをパラメータで指定するのが安全
+		※今回は、チュートリアルの位置づけであるため、この対応となっている
+	RequestMappingのアノテーションで、URLを紐づけることができる 
+		※「value」：@WebServletに近い役割を持ち、紐づくURLを定義することができる
+		※「method」：RequestMethodから、REST種別を付与できる（get/postなど）
+
+コンセプト
+	コントローラの作成（他シナリオ）
+利用方法
+	URLに引数を付与したい場合
+		@RequestMapping(value = "/list", method = RequestMethod.GET)
+		public List<ArticleInfo> getArticles(ArticleSearchCondition articleSearchCondition) {
+			return articleService.getLatestArticle(articleSearchCondition);
+		}
+	URLにパラメータを付与したい場合
+		@RequestMapping(value = "/{articleId}", method = RequestMethod.GET)
+		public ArticleInfo getArticle(@PathVariable int articleId) {
+			return articleService.searchArticle(articleId);
+		}
+	URLで、POST・GETの両方を可能とする場合
+		@RequestMapping(value = "/nice", method = { RequestMethod.GET, RequestMethod.POST })
+		public Article incrementNice(@RequestParam("articleId") int articleId) {
+			Article article = articleService.searchArticle(articleId);
+			article.setNiceCount(article.getNiceCount() + 1);
+			articleService.updateArticle(article);
+			return article;
+		}
+補足情報：XXX
+	URLに引数を付与したい場合
+	・URLの引数は、メソッドの引数と突合され、名称が会う場合、値がメソッドの引数に代入される
+	・URL例）article/list?offset=0&limit=3
+	
+	URLにパラメータを付与したい場合
+	・URL自体をパラメータとするため、メソッドの引数に「@PathVariable」を付与する
+	・URL例）article/4
+	・RequestMapping上での定義）value="/{articleId}"
+	
+	URLで、POST・GETの両方を可能とする場合
+	・RequestMappingでは、{}で囲ったうえで、両方のREST種別を設定する
+	・メソッド引数は「@RequestParam{--}」で、具体的に紐づく対象を指定し、引数に代入する
+	
+	
+
+コンセプト
+	コントローラのテスト方法
+利用方法
+	スタータークラスを起動する ※@SpringBootApplication
+	Postmanを開き、以下の設定をする
+		https://learning.postman.com/docs/getting-started/creating-the-first-collection/
+		・「＋」アイコンで、新規Collectionを作成する
+		・「…」から「Add Request」を押下する
+		・以下の設定を付与する
+			・RESTタイプ：これはメソッドに記載した種別と同じ
+			・URL：基本的には「サーバ:ポート/[設定したURL]」 ※Getならその引数などを追加で記載する
+				※今回は、「http://localhost:8080/article/list?offset=0&limit=3」
+	「Send」のボタンを押下する
+		※APIを呼び出し、Getのパラメータ引数を渡したことになる
+		※POSTの場合だと、Bodyに記載することになる
+	以下の挙動を確認する
+		・Postman上で、リターン値を確認する ※GETの場合、BODYに値が返ってくる
+		・SpringBoot側のコンソールで、HTTPリスポンスの200番が返ってくること
+補足情報：XXX
+	・GETでパラメータを指定した際、Controller側では、名称が一致した引数を自動的に代用する仕組みがある
+	・POSTの場合は、以下の対応をする
+		RESTタイプ
+		・POST
+		Header
+		・Key= Content-Type; Value= application/json
+		Body
+		・設定は、RawのJSON
+		・Jsonの内容を記載する
+		例）
+		{
+		    "articleTitle":"テストタイトル",
+		    "articleContent":"投稿内容"
+		}
+
+
+【BK】
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
+
