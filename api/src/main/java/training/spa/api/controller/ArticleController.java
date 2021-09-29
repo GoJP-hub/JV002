@@ -3,6 +3,9 @@ package training.spa.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +39,12 @@ public class ArticleController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public Article insertArticle(@RequestBody Article article) {
+	public Article insertArticle(@RequestBody @Validated Article article, BindingResult bindingResult) {
+
+		for (ObjectError error : bindingResult.getAllErrors()) {
+			System.out.println(error.getDefaultMessage());
+		}
+
 		articleService.insertArticle(article);
 		return article;
 	}

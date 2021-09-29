@@ -1,0 +1,62 @@
+【】
+コンセプト
+	バリデーションとエラーハンドリングの方法
+	・バリデーションで判定し、エラーをエラーハンドラーで対応するという関係性
+	
+コンセプト
+	バリデーション：DomainでNullではいけない項目を設定する
+利用方法
+	@NotBlankを付与し、メッセージ属性も追記する
+		@NotBlank(message="articleTitle is required.")
+	バリデーションを利用するために、以下の処理を追加する　※エラーハンドリングはされていない
+		・Domainを引数とする場合、引数に対して、@Validatedを付与する
+		・また、バリデーション結果を受け取るために、BindingResultも引数として渡す
+		例）コントローラクラス：ArticleController
+			@RequestMapping(method = RequestMethod.POST)
+			public Article insertArticle(@RequestBody @Validated Article article) {
+				articleService.insertArticle(article);
+				return article;
+			}
+補足情報：importが成功しない場合
+	https://stackoverflow.com/questions/62254642/cannot-resolve-symbol-notblank
+	build.gradleでライブラリ管理を行っている
+	・上記のURLのように必要なライブラリの名称を調べ、
+	・build.gradleのdependenciesのimplementationで定義する
+	※再度ビルド（リフレッシュ）したら、自動的に読み込んでインポートしてくれる
+補足情報：エラーハンドリングされていない状態
+	上記の対応は、「条件を設定」して、「呼び出し」ているに過ぎない
+	・エラーをキャッチしても、Postmanで確認したところ、値としては正常に格納されている
+
+
+コンセプト
+	エラーハンドラーを作成する
+利用方法
+	新規パッケージ「exception」を作成する
+	新規クラスを作成する
+		・今回の例では、名称は、ApplicationErrorException
+		・Exceptionクラスを継承する
+		・以下のプロパティを定義する
+			private String errCode;
+			private String functionName;
+			private String message;
+		・Lombokのアノテーション「Setter」「Getter」を付与する  ※クラスレベル
+		・Lombokのアノテーション「AllArgsConstructor」を付与する
+			・すべてのプロパティを引数とするコンストラクタの定義を代替する
+補足情報：XXX
+	XXX
+
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
+【BK】
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
