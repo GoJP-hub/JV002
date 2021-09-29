@@ -13,8 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import training.spa.api.dao.ArticleDao;
 import training.spa.api.dao.ReplyDao;
 import training.spa.api.domain.Article;
+import training.spa.api.domain.ArticleInfo;
 import training.spa.api.domain.ArticleSearchCondition;
 import training.spa.api.domain.Reply;
+import training.spa.api.service.ArticleService;
 
 @SpringBootTest
 class ApiApplicationTests {
@@ -24,6 +26,9 @@ class ApiApplicationTests {
 
 	@Autowired
 	ReplyDao replyDao;
+
+	@Autowired
+	ArticleService articleService;
 
 	private static final Logger logger = LoggerFactory.getLogger(ApiApplicationTests.class);
 
@@ -54,5 +59,29 @@ class ApiApplicationTests {
 	public void reply() {
 		List<Reply> replyList = replyDao.selectByArticleId(1);
 		assertTrue(replyList.size() > 0);
+	}
+
+	@Test
+	public void articleService() {
+		// 検索条件を付与する
+		ArticleSearchCondition articleSearchCondition = new ArticleSearchCondition();
+		articleSearchCondition.setLimit(500);
+		articleSearchCondition.setOffset(0);
+
+		// サービスを利用して、ArticleInfoの一覧を取得
+		List<ArticleInfo> articleInfoList = articleService.getLatestArticle(articleSearchCondition);
+
+		// 判定を行う
+		boolean result = false;
+		for (ArticleInfo a : articleInfoList) {
+			logger.info("Article ID is" + a.getArticleId() + "; No of Reply is " + a.getReplyList().size() );
+
+			// もし最初のArticleが取得でき、尚且つ、対象記事に複数のリプライが付与されている場合、正常とする
+			if (a.getArticleId() == 1 && a.getReplyList().size() >=2) {
+				result = true;
+				break;
+			}
+		}
+		assertTrue(result);
 	}
 }

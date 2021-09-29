@@ -1,0 +1,91 @@
+【SpringBoog】
+コンセプト
+	サービスの開発
+補足情報：基本構造
+	四段階の構造になっている
+	①コントローラ：	URLとビジネスロジックをマッピングする
+	②サービス：	ビジネスロジックに該当。多くがデータベースの操作に関わる。
+	③DAO：	データベース操作用のメソッドを格納。サービスはこのメソッドを呼び出す。
+	④DB＆接続：	MyBatisを利用して、DBに接続する旨が検討される
+
+コンセプト
+	以下の要件を踏まえたサービスを作成する
+	・サービス基準のためのBEANを作成
+		※DBテーブル単位で作成したBeanを組み合わせたビジネス用途で作成する
+	・サービスの作成
+		※戻り値は、ArticleInfo（ArticleとReplyListの複合Bean）
+利用方法
+	・「domain」にて、以下の情報を持つArticleInfoのBeanクラスを作成する
+		・Articleクラスを継承する
+		・コンストラクタを作成し、Articleを引数で渡し、ArticleInfoに代入する
+		・Replyのリストを作成する
+		・アノテーションでLombokのDataを付与する
+	・「service」にて、以下の情報を持つArticleServiceクラスを作成する
+		・Springの@Serviceを付与する
+			※Componentと同様にComponentScanの対象になる（SpringbootApplicationの内部処理）
+			※Componentとは違い、ビジネスロジック用と明示する
+		・関連するDaoを@Autowireを使いつつ、定義する
+			※今回はArticleDaoとReplyDao
+		・ArticleInfoを生成するメソッドを作成する
+			まず、ArticleListを「selectLatest」ロジックで取得
+			空のArticleInfoのリストを作成
+			各Article単位で以下の処理を行う
+			・関連Replyを取得し、リストに格納
+			・ArticleInfoを作成　※Articleがコンストラクタ情報として必要
+			・ReplyListを格納
+			内容格納済みのArticleInfoリストを返却する
+
+コンセプト
+	サービスのテスト方法
+利用方法
+	・テストクラスに以下を実装する
+		ArticleServiceクラスをインスタンス化し、DIする
+		下記のテストメソッドを実装する
+			@Test
+			public void articleService() {
+				// 検索条件を付与する
+				ArticleSearchCondition articleSearchCondition = new ArticleSearchCondition();
+				articleSearchCondition.setLimit(500);
+				articleSearchCondition.setOffset(0);
+				// サービスを利用して、ArticleInfoの一覧を取得
+				List<ArticleInfo> articleInfoList = articleService.getLatestArticle(articleSearchCondition);
+				// 判定を行う
+				boolean result = false;
+				for (ArticleInfo a : articleInfoList) {
+					logger.info("Article ID is" + a.getArticleId() + "; No of Reply is " + a.getReplyList().size() );
+
+					// もし最初のArticleが取得でき、尚且つ、対象記事に複数のリプライが付与されている場合、正常とする
+					if (a.getArticleId() == 1 && a.getReplyList().size() >=2) {
+						result = true;
+						break;
+					}
+				}
+				assertTrue(result);
+
+
+コンセプト
+	DBの更新を伴うサービスを実装する
+利用方法
+	DB更新用のメソッドを追加する
+		例）
+		@Transactional
+		public void insertArticle(Article article) {
+			articleDao.insert(article);
+		}
+補足情報：アノテーションの意味合い
+	TransactionアノテーションがDBの管理を行うようになる
+	※一部が失敗するとロールバックするなど
+
+
+
+
+
+【BK】
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
+
