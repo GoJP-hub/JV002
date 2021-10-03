@@ -1,0 +1,52 @@
+【】
+コンセプト
+	AOP--Google Authの設定
+利用方法
+	以下のウェブサイトにアクセスする
+		console.cloud.google.com
+		・無料登録も含め、何もしなくていい
+		・左上の「Select Project」を押下し、新規プロジェクトを作成する
+		・「Select Project」から、上記のプロジェクトに遷移する
+	GCPのAuthクライアントを作成する
+		・左の欄（もしくは、左の三本線を押下した後）、API＆Servicesを押下
+		・「Create Credentials」ボタン（中央上側）を押下した後、「Create OAuth ClientID」を押下する
+		・「同意画面の設定」ボタンを押下する
+		・以下の情報を設定する
+			・ユーザータイプ：外部
+				→次へを押下する
+			・アプリ名：	SPA Training
+				→次へを押下する
+			・特に記入せず、進む
+		・再度「Create Credentials」から「Create OAuth Client」を押下する
+		・以下の情報を押下する
+			・アプリタイプ：WEB
+			・承認済みJavascript元に以下のパスを設定する
+				Springboot:	http://localhost:8080
+				angular:	http://localhost:4200
+			・作成を押下する
+		
+補足情報：XXX
+	XXX
+
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
+【BK】
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
+
