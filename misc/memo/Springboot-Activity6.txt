@@ -42,15 +42,70 @@
 		・Lombokのアノテーション「Setter」「Getter」を付与する  ※クラスレベル
 		・Lombokのアノテーション「AllArgsConstructor」を付与する
 			・すべてのプロパティを引数とするコンストラクタの定義を代替する
+	新規Beanクラスを作成する　同様にExceptionパッケージ
+		・今回の例では、名称は「ErrorResponse」
+		・同じプロパティを定義
+		・Lombokのアノテーション「Data」を付与する
+		・Lombokのアノテーション「AllArgsConstructor」を付与する
+		・ResponseEntityを返却するメソッドを追加する
+			public static ResponseEntity<ErrorResponse> createResponse(ApplicationErrorException e, HttpStatus status){
+				return new ResponseEntity<ErrorResponse>(
+						new ErrorResponse(e.getErrCode(), e.getFunctionName(), e.getMessage())
+						, status);
+			}
+補足情報：XXX
+	ResponseEntityにBeanを格納することで、エラーとして返却が可能になる
+	・内容としては、「ErrorResponseクラス型」のErrorResponseを返却する
+	・引数として、①ErrorResponseクラスの値、②Httpのステータスを格納して返却する
+
+コンセプト
+	エラーハンドリングを利用する設定を追加する
+利用方法
+	新規クラスを作成する　※パッケージは「Controller」
+		エラーハンドラーを行うクラス
+		・名称は「ApplicationErrorExceptionHandler」
+		・ResponseEntityExceptionHandlerクラスを継承する
+		・アノテーション「RestControllerAdvice」を付与する
+			※すべてのコントローラで動作するクラスのため
+		・エラーハンドリング用のメソッドを追加する
+	新規クラスを作成する　※パッケージは「Controller」
+		コントローラの共通クラス
+		・名称は「ControllerBase」
+		・Loggerをインスタンス化する
+		・バリデーションとハンドラーを紐づけるメソッドを追加
+			public void validate(String funcName, List<ObjectError> errorList) throws ApplicationErrorException{
+
+				StringBuilder sb = new StringBuilder();
+				for (ObjectError error:errorList) {
+					if(!StringUtils.hasLength(sb.toString())) {
+						sb.append("/");
+					}
+					sb.append(error.getDefaultMessage());
+				}
+
+				if(!StringUtils.hasLength(sb.toString())) {
+					// このプロジェクトでは、バリデーションエラーのコードを「V」出始めることにする
+					throw new ApplicationErrorException("V001", funcName, sb.toString());
+				}
+			}
+	通常のコントローラクラスに、以下の対応をする
+		・共通クラスを継承させる
+		・対象のメソッドに、バリデーションメソッドを呼び出す
+			validate("insertArticle", bindingResult.getAllErrors());
+		・対象メソッドにthrows句を追記する
 補足情報：XXX
 	XXX
 
 コンセプト
-	XXX
+	SQLエラーハンドラーも追加する
+	※SQL構文で失敗した時に、未対応だとコンソールにSQL文が表示されるため
 利用方法
-	XXX
+	対象のサービスクラスにバリデーションを付与する
+		・loggerを定義する
 補足情報：XXX
 	XXX
+
+
 
 【BK】
 コンセプト
