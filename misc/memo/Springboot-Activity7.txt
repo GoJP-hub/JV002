@@ -1,0 +1,67 @@
+【】
+コンセプト
+	AOP(アスペクト指向)に基づいた機能を作成する
+利用方法
+	XXX
+補足情報：AOPとは
+	横断的関心事を実装するときに最適なフレームワーク
+	例としては、ログの出力や、機能を動かす前の認証などを実装するときに使う
+	AOPは、下記の悩みに対してのベターな解決策として利用される
+	・個々の例をユーズケースとして挙げることもできるのですが、似たケースが散在してしまう
+	・また、ログ出力や認証などは、ユーズケースで管理したい本質的な要求ではないため、ソースコードを別にしたい	
+
+コンセプト
+	AOPの機能を作成する（どの機能が動作したかをログ出力する）
+利用方法
+	SpringbootのdependenciesでAOPを設定する
+		・build.gradleを開く
+		・dependenciesの欄に以下を追記する
+			compile 'org.springframework.boot:spring-boot-starter-aop'
+		※記述方法がわからない場合、「mvprepository.com」などで、gradleなどのプロジェクトに応じたビルド方法を学べる
+	SpringbootのDependenciesの修正を行う
+		・現状、「lombok」がcompileOnlyで設定されている
+		・onlyを除くことで、「lombok」と「AOP」の両方が機能するようにする
+	新規パッケージ「aop」を用意する
+	新規クラスを追記する
+		・名称は「ControllerLog」とする
+		・アノテーション「@Aspect」を付与する
+		・アノテーション「@Component」を付与する
+		・Loggerをインスタンス化する
+		・AOP利用する対象のメソッドを追記する
+			
+			※補足説明１：JointPointとは
+			・引数のJointPoint	実行のトリガーになったメソッドを渡す
+			※補足説明２：メソッドの実装内容
+			・どのURLにアクセスされたのかをログに出力する　※そのために、「RequestServletPath」にアクセスしたい
+			・しかし、このクラスはControllerではないため、Requestのオブジェクトが無い
+			・ThreadLocalから取得する形にする
+		・AOP対象メソッドに対し、以下のアノテーションを付与する
+			@Before("execution(public * training.spa.api.controller.*Controller.*(..))")
+			※アノテーションでタイミングを指定する
+			※以下の構成になっている
+				⓪アノテーション属性	execution	これはアノテーションに対する属性のため、固定
+				①アクセス修飾子	public	ここはアクセス修飾子を設定
+				②戻り値	*	戻り値を設定
+				③パッケージ	training--controller	対象とするパッケージパスを指定できる
+				④クラス	*Controller	対象とするクラスを指定できる
+				⑤メソッド	*	柔軟にメソッド指定ができる
+				⑤引数	(..)	これも同様に、柔軟にメソッドに対する引数を設定できる
+			
+補足情報：XXX
+	XXX
+	
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+【BK】
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
+

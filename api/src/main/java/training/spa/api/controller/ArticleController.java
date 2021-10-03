@@ -24,7 +24,7 @@ import training.spa.api.service.ArticleService;
 @RestController
 @CrossOrigin
 @RequestMapping("/article")
-public class ArticleController extends ControllerBase{
+public class ArticleController extends ControllerBase {
 
 	@Autowired
 	private ArticleService articleService;
@@ -40,11 +40,12 @@ public class ArticleController extends ControllerBase{
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public Article insertArticle(@RequestBody @Validated Article article, BindingResult bindingResult) throws ApplicationErrorException{
+	public Article insertArticle(@RequestBody @Validated Article article, BindingResult bindingResult)
+			throws ApplicationErrorException {
 
-				for (ObjectError error : bindingResult.getAllErrors()) {
-					System.out.println(error.getDefaultMessage());
-				}
+		for (ObjectError error : bindingResult.getAllErrors()) {
+			System.out.println(error.getDefaultMessage());
+		}
 
 		// バリデーションを行う
 		validate("insertArticle", bindingResult.getAllErrors());
@@ -54,12 +55,15 @@ public class ArticleController extends ControllerBase{
 	}
 
 	@RequestMapping(value = "/nice", method = { RequestMethod.GET, RequestMethod.POST })
-	public Article incrementNice(@RequestParam("articleId") int articleId) {
+	public Article incrementNice(@RequestParam("articleId") @Validated int articleId, BindingResult bindingResult)
+			throws ApplicationErrorException {
 		// 対象の投稿を取得
 		Article article = articleService.searchArticle(articleId);
 
 		//現行のNiceの数を取得し、インクリメントする
 		article.setNiceCount(article.getNiceCount() + 1);
+
+		validate("incrementNice", bindingResult.getAllErrors());
 
 		//最新の投稿情報を、DB上に更新する
 		articleService.updateArticle(article);
