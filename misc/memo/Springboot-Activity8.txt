@@ -23,23 +23,166 @@
 			・承認済みJavascript元に以下のパスを設定する
 				Springboot:	http://localhost:8080
 				angular:	http://localhost:4200
-			・作成を押下する
-		
+			・作成を押下し、表示されるClient IDを保持する
+	Authクライアント情報を、Application.yamlに設定する
+		・Application.yamlを開く
+		・以下の情報を記載する
+			oauth2:
+			  client id: [取得したClientID情報]
+		※補足
+			・セキュリティ関係上、application.yamlをgitの登録内容から削除
+			・client idを宣言時、インデントには半角スペース２つを使う
+	AuthクライアントのIDを格納するBeanクラスを作成する
+		・パッケージは、「config」名称は、「OAuthConfig」
+		・Lombokのアノテーション「Data」を追加する
+		・以下のアノテーションを、Application.yamlとの紐づけのために行う
+			@Configuration
+			@ConfigurationProperties(prefix = "oauth2")
+			※上記は、oauth2配下のプロパティを格納する指示を出している
+			※これをすることで、yamlから取得する設定を書かずに対応ができる　　
+		・以下の内容を設定する
+			private String clientId;
+	
 補足情報：XXX
 	XXX
 
 コンセプト
-	XXX
+	クライアントIDをapplication.yamlに記載しないで、情報を保持する方法
 利用方法
-	XXX
-補足情報：XXX
-	XXX
+	・「実行」にある実行構成を押す
+	・環境のタブを押下する
+	・追加を押下する
+	・変数名を「OAUTH2_CLIENTID」にして、値を設定する
+
 コンセプト
-	XXX
+	依存性の検証方法
 利用方法
-	XXX
+	下記から依存性を取得する
+		https://mvnrepository.com/artifact/com.google.apis/google-api-services-oauth2
+	build.gradleに指定された設定をDependenciesとして付与する
+補足情報：認証の仕組み
+	フロント側
+	・リクエスト送信時に、Googleの機能と認証し、正常であればトークンを発行される
+	・トークンは、リクエストのヘッダーに格納される
+	・記載される場合は、「Bearer [ヘッダ.ペイロード.署名]」となっている　※Bearerとの間は半角スペース
+	バック側
+	・認証機能は、AOPで実装する
+	・ヘッダーから、Json Web Tokenを取得する
+	・上記は、Googleから発行されたトークンで、三つの要素（ヘッダ・ペイロード・署名）で構成されている
+	・基本的に認証は、以下の2段階で行う
+		・クライアントID、または、Issuerをパラメータとして渡す
+		・署名の部分を認証する
+		・正常である場合、コントローラやサービスクラスに連携する
+	・認証後は、以下の処理を実装する（サンプル）
+		・Javaで扱いやすくしたGoogle ID Tokenを取得・オブジェクト化する
+		・ペイロードを取得する　※この中にユーザ情報（ID、メルアド、名前、サムネイルURLなど）が記載されている
+		・このユーザとして、処理を進める
+		
+
+コンセプト
+	認証用のサービスを作成する
+利用方法
+	新規クラスを作成する
+		パッケージ＝service、クラス＝AuthService
+	以下の基本仕様を実装する
+		アノテーションserviceを付与する
+		Loggerをインスタンス化する
+	以下を機能のためにインスタンス化する ※インポート元は（com.google.api.client）
+		・JsonFactory：JWTを読み込むためのファクトリー
+		static final JsonFactory JSON_FACTORY = new JacksonFactory();
+		・HTTPTransport：HTTPのローレベルトランスポートを実装するためのクラス
+		static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+		・カスタムのアプリケーションエラー
+			private final static ApplicationErrorException appException = new ApplicationErrorException("A001", "authorization","unauthorized access.");
+	以下のメソッドを実装する
+		　　
+	関連のエクセプションを付与する
+		ApplicationError
+		IOException
+		GeneralSecurityException
 補足情報：XXX
 	XXX
+
+コンセプト
+	認証サービスをコントローラで共通で利用するためのAOPを作成する
+利用方法
+	新規クラスを作成
+		・パッケージ：aop、名称は「Authorization」
+	以下の設定を付与する
+		・アノテーション「Aspect」を付与する
+		・アノテーション「Component」を付与する
+		・カスタムエクセプションを用意する
+		・ロガーを用意する
+	以下のメソッドを追記する
+		@Before("execution(public * training.spa.api.control.*Controller.*(..))")
+		public void authorization() throws ApplicationErrorException, GeneralSecurityException, IOException{
+			//リクエスト情報を取得
+			RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+			ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) attributes;
+			HttpServletRequest request = servletRequestAttributes.getRequest();
+
+			//ヘッダーから関連部分を抽出
+			Enumeration<String> header = request.getHeaders("Authorization");
+
+			//認証１：ヘッダーの有無を認証
+			if (!header.hasMoreElements()) {
+				logger.error(appException.toString() + " Unauthorized access.");
+				throw appException;
+			}
+
+			//認証２：OAuthを利用した認証
+			String authorization = header.nextElement();
+			// 戻り値は利用していないが、エラー時にTHROWすることはできる
+			authService.getUserAttr(authorization);
+		}
+	アプリケーションエラーの情報を、ハンドラーに登録する
+		典型的なのは、「HttpStatus.UNAUTHORIZED」
+	テストをしてみる
+		PostmanでHeaderの欄を未記入で実行するのみでよし
+補足情報：XXX
+	XXX
+
+コンセプト
+	AOPの制限範囲を制限するためのアノテーションを自作する（AuthGuardアノテーション）
+利用方法
+	新規アノテーションを作成する　※Class、Interfaceのように選択肢あり
+		・パッケージ「annotation」、名称「AuthGuard」
+		※Eclipseでは、「注釈型」という名称
+	以下の設定を付与する
+		・アノテーション「Target」を付与し、ELEMENT.TYPEをMETHODとする
+			※アノテーションの利用箇所を指定する
+			@Target(ElementType.METHOD)
+		・アノテーション「Retention」を付与し、PolicyをRuntimeにする
+			リテンションのスコープを決めれる
+			※ソースの起動期間、コンパイル後も残すなど
+			@Retention(RetentionPolicy.RUNTIME)
+	当アノテーションを該当メソッドに付与する
+		※今回の例では、以下のメソッドに付与する
+		ArticleController.insertArticle
+		ReplyController.insertReply
+	AOPの実行条件を更新する
+		@Before("execution(public * training.spa.api.controller.*Controller.*(..)) 
+			&& @annotation(training.spa.api.annotation.AuthGuard")
+補足情報：XXX
+	XXX
+
+コンセプト
+	追加機能：ユーザ情報を取得し、記事の登録者として登録する
+利用方法
+	対象メソッドの引数に、以下を追記する
+		・String型の変数
+		・上記にアノテーション「RequestHeader」を付与し、「Authorization」と宣言する
+	AuthServiceをAutoWiredする
+	AuthServiceのヘッダー情報を成形するメソッドを呼び出す
+		※この際に、AuthServiceのThrowsと同じものがこちらでも定義されていることを確認する
+	articleオブジェクトの該当箇所に記載する
+	
+補足情報：XXX
+	XXX
+
+
+
+
 
 【BK】
 コンセプト
