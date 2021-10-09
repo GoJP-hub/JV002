@@ -1,0 +1,38 @@
+【】
+コンセプト
+	fat jarの作成
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
+コンセプト
+	ビルドにアノテーションのLombokを利用可能とするための設定
+利用方法
+	build.gradleのdependenciesに以下を追記する
+		annotationProcessor 'org.project.lombok:lombok'
+	環境変数を設定する　※これは不必要かもしれないから、参考程度
+		set JAVA_HOME=C:\Program Files\Java\[JDK]
+		set PATH=C:\Program Files\Java\[JDK]\bin;%PATH%
+		→java -versionで上記の設定を確認する
+	プロジェクトパスまで遷移する
+	gradle buildコマンドでビルドする
+		→libフォルダにjarが生成されているはず (build/libs) 
+	実行するには以下を実施する
+		build/libsへ遷移する
+		java -jar [api名]
+	
+	このJarがビルドと同じ効力を持つ
+補足情報：XXX
+	XXX
+
+
+【BK】
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
+
