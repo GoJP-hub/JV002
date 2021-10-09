@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiOperation;
 import training.spa.api.annotation.AuthGuard;
 import training.spa.api.domain.Article;
 import training.spa.api.domain.ArticleCount;
@@ -38,16 +39,19 @@ public class ArticleController extends ControllerBase {
 	@Autowired
 	private AuthService authService;
 
+	@ApiOperation(value= "投稿の一覧を取得する", notes= "ページ切り替え機能として、OffsetとLimitをパラメータで指定する")
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public List<ArticleInfo> getArticles(ArticleSearchCondition articleSearchCondition) {
 		return articleService.getLatestArticle(articleSearchCondition);
 	}
 
+	@ApiOperation(value= "指定した投稿と関連する返信一覧を取得する", notes= "パラメータで指定したArticleIdの投稿とその返信一覧を取得する")
 	@RequestMapping(value = "/{articleId}", method = RequestMethod.GET)
 	public ArticleInfo getArticle(@PathVariable int articleId) {
 		return articleService.searchArticle(articleId);
 	}
 
+	@ApiOperation(value= "投稿を追加登録する", notes= "投稿を追加登録する。認証が必要")
 	@AuthGuard
 	@RequestMapping(method = RequestMethod.POST)
 	public Article insertArticle(@RequestHeader("Authorization") String authorization, @RequestBody @Validated Article article, BindingResult bindingResult)
@@ -71,6 +75,7 @@ public class ArticleController extends ControllerBase {
 		return article;
 	}
 
+	@ApiOperation(value= "「良いね」の回数をカウントアップする", notes= "パラメータ指定をしたArticleIDを基準に、良いねをカウントアップする")
 	@RequestMapping(value = "/nice", method = { RequestMethod.GET, RequestMethod.POST })
 	public Article incrementNice(@RequestParam("articleId") @Validated int articleId, BindingResult bindingResult)
 			throws ApplicationErrorException {
@@ -87,6 +92,7 @@ public class ArticleController extends ControllerBase {
 		return article;
 	}
 
+	@ApiOperation(value= "投稿の総件数を取得する", notes= "投稿の総件数を取得する")
 	@RequestMapping(value = "/count", method = RequestMethod.GET)
 	public ArticleCount count() {
 		return articleService.countArticle();

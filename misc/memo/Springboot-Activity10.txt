@@ -1,0 +1,78 @@
+【】
+コンセプト
+	API仕様書の出力
+補足情報：OpenAPI仕様書とは？
+	API仕様書の一つの形態
+	・JSON、または、YAML形式で記述する
+	・RestAPIの仕様書を記載する際のスタンダード
+	・以下の情報などを含む
+		・リクエスト：どのURLに、どんなパラメータを付与するか
+		・リスポンス：どのような応答があるのか
+	・OpenAPI仕様書からは、様々なものを自動生成することができる
+		・HTMLドキュメント、スタブサーバ、APIクライアントソースなど
+	・OpenAPIは、ソースからOpenAPIを逆生成することも可能
+		※Springの場合、SpringFoxが該当するライブラリ
+
+コンセプト
+	SpringFoxを利用したOpenAPI仕様書の作り方
+利用方法
+	以下をDependenciesに追記する
+		compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+		compile group: 'io.springfox', name: 'springfox-core', version: '2.9.2'
+		compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.0.2'
+	新規クラスを作成する
+		・パッケージ「config」、名称「Swagger2Config」
+		※swaggerの設定を行うためのコンフィグを作成
+	以下の設定を付与する
+		・アノテーション「Configuration」を付与する
+		・アノテーション「EnableSwagger2」を付与する
+	以下のメソッドを追加する
+		@Bean
+		public Docket swaggerSpringMvpPlugin(){
+			return new Docket(DocumentationType.SWAGGER_2)
+					.select() // API SELECT BUILDERを生成
+					.paths(paths())// どのAPIをドキュメント化するのか指定する
+					.build() //Docketを生成
+					.apiInfo(apiInfo());// その他のAPI情報を連携する
+		}
+
+		private Predicate<String> paths() {
+			// ドキュメント生成対象URLを指定
+			return Predicates.or(
+					Predicates.containsPattern("/article")
+					, Predicates.containsPattern("/reply"));
+		}
+
+		private ApiInfo apiInfo() {
+			return new ApiInfo(
+					"JAVA SPAトレーニング：API編" //Title
+					, "掲示板アプリの生成"//Description,
+					, "V1"//Version,
+					, ""//termOfServiceUrl,
+					, new Contact(
+							"ME" // NAME
+							, "URL" //URL
+							, "sample.gmail.com")// EMAIL
+					, "linencedBY" // licence
+					, "licenceURL" // licence url
+					, new ArrayList<VendorExtension>());
+		}
+	コントローラ側で、APIの説明内容を設定する
+		@ApiOperation(value= "返信を追加登録する", notes= "返信を追加登録する。認証が必要")
+	アプリをビルドし、以下のURLを開くとOpenAPI仕様書が確認できる
+		http://localhost:8080/swagger-ui.html
+補足情報：XXX
+	XXX
+
+
+
+
+【BK】
+コンセプト
+	XXX
+利用方法
+	XXX
+補足情報：XXX
+	XXX
+
+
