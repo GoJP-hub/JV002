@@ -61,6 +61,7 @@
 		@ApiOperation(value= "返信を追加登録する", notes= "返信を追加登録する。認証が必要")
 	アプリをビルドし、以下のURLを開くとOpenAPI仕様書が確認できる
 		http://localhost:8080/swagger-ui.html
+		※これには①記載したメモ、②サンプルの戻り値、③テスト実行、などが行える
 補足情報：XXX
 	XXX
 
