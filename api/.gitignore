@@ -38,4 +38,3 @@ out/
 
 logs/*.log.*
 logs/*.log
-src/main/resources/application.yaml
